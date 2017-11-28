@@ -463,7 +463,7 @@ for i in range(n_UE):
 
 # print(rate_UE)
 
-iter = 100# Number of Interations
+iter = 30# Number of Interations
 
 Q = np.zeros(shape=(M, iter))  # Matrix to update penalty to MVNO
 Q[:, 0] = 0.1
