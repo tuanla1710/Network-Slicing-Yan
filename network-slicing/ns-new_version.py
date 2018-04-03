@@ -1,10 +1,12 @@
 from __future__ import division
-print 'Hello, Colaboratory!'
-#!pip install cvxpy 
-#!pip install ncvx
-#!pip install numpy
-!pip install matplotlib
 
+print 'Hello, Colaboratory!'
+# !pip install cvxpy
+# !pip install ncvx
+# !pip install numpy
+# !pip
+# install
+# matplotlib
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,6 +23,7 @@ def clear_all():
 
         del globals()[var]
 
+
 clear_all()
 np.random.seed(11)
 
@@ -35,7 +38,7 @@ def penalty_to_mvno(beta_local, r_m_local, R_local, q_m_old, b_local):
     # R: total number of RBs of InP
     # q_m_old: penalty parameter at previous time slot.
     # b: bidding value vector getting from MVNO
-    q_m_new = 1 / beta_local * (1 - r_m_local / R_local ) * q_m_old / (R_local - r_m_local) * np.sum(b_local)
+    q_m_new = 1 / beta_local * (1 - r_m_local / R_local) * q_m_old / (R_local - r_m_local) * np.sum(b_local)
     return q_m_new
 
     # # testing:
@@ -76,7 +79,7 @@ def cal_number_of_rbs(b_m, b, R):
     # b: bidding value vector getting from MVNO
     # R: total number of RBs of InP
     # b_m: bidding value of MVNO m
-    r_m = b_m / (np.sum(b)) * R  # Question: Do we need to round this number to an Integer value ???
+    r_m = (b_m / (np.sum(b))) * R  # Question: Do we need to round this number to an Integer value ???
     # This one will be considered after finishing ...
     return r_m
 
@@ -179,18 +182,19 @@ def display_network_model(Coor_BS, Coor_UE, M, S, rad):
     plt.legend()
     plt.show()
 
+
 def plot_RATE(rate, M, iter):
     plt.figure(2)
     t = range(iter)
-    y_max = rate.max() + rate.max()/10
+    y_max = rate.max() + rate.max() / 10
     for m in range(M):
         if (m == 0):
-            plt.plot(t, rate[0,:], "-go", ms=5, label='MVNO-1')
+            plt.plot(t, rate[0, :], "-go", ms=5, label='MVNO-1')
         elif (m == 1):
-            plt.plot(t, rate[1,:], "-b*", ms=5,
+            plt.plot(t, rate[1, :], "-b*", ms=5,
                      label='MVNO-2')
         elif (m == 2):
-            plt.plot(t, rate[2,:], "-m>", ms=5,
+            plt.plot(t, rate[2, :], "-m>", ms=5,
                      label='MVNO-3')
         else:
             ValueError('M must be less than 3!')
@@ -202,18 +206,19 @@ def plot_RATE(rate, M, iter):
     plt.ylabel('Data rate (Mbps)')
     plt.show()
 
+
 def plot_RA(rate, M, iter):
     plt.figure(3)
     t = range(iter)
-    y_max = rate.max() + rate.max()/10
+    y_max = rate.max() + rate.max() / 10
     for m in range(M):
         if (m == 0):
-            plt.plot(t, rate[0,:], "-go", ms=5, label='MVNO-1')
+            plt.plot(t, rate[0, :], "-go", ms=5, label='MVNO-1')
         elif (m == 1):
-            plt.plot(t, rate[1,:], "-b*", ms=5,
+            plt.plot(t, rate[1, :], "-b*", ms=5,
                      label='MVNO-2')
         elif (m == 2):
-            plt.plot(t, rate[2,:], "-m>", ms=5,
+            plt.plot(t, rate[2, :], "-m>", ms=5,
                      label='MVNO-3')
         else:
             ValueError('M must be less than 3!')
@@ -310,7 +315,6 @@ def cal_XR_min(r_m, m, S, rate_UE, rate_m_min):
 
     return X_m_min, R_m
 
-
     # X_m_min = cal_R_min(20, 0, S, rate_UE, 2)
     # # print(S)
     # print (X_m_min)
@@ -323,73 +327,88 @@ def KKT_method(S, m, r_m, rate_UE, rate_m_min):
     # S = np.array([10, 20, 30]) # Number of users at each MVNO
     # rate_UE: SINR of all users.
     # rate_m_min: array of minimum requirement for each user in each MVNO.
-    
+
     # Output parameter: X_m (vector of users of the service provider m)
-    # vector data rate of the MVNO m R_m * X_mR_m*X_m    
-    
+    # vector data rate of the MVNO m R_m * X_mR_m*X_m
+
     s_m = S[m];  # Number of UEs at MVNO m
-    s_m_nonQoS = int(s_m/2); # Number of non-QoS users
-    s_m_QoS = int(s_m/2); # Number of QoS users 
-    
-    # calculate the fraction of bandwidth for each QoS user. 
+    s_m_nonQoS = int(s_m / 2);  # Number of non-QoS users
+    s_m_QoS = int(s_m / 2);  # Number of QoS users
+
+    # calculate the fraction of bandwidth for each QoS user.
     # print ("s_m = ", s_m)
-    X_m = np.zeros(s_m)  # Matrix of resource allocation of all UEs    
-    
+    X_m = np.zeros(s_m)  # Matrix of resource allocation of all UEs
+
     # print ("s_m_QoS -1 = ", s_m_QoS-1 )
-    
-    for i in range(0,(s_m_QoS-1)):        
+    # print('rate_UE = ', rate_UE[:,0]);
+    for i in range(0, s_m_QoS):
         if m == 0:
             # print(rate_UE[0:s_m][0])
             X_m[i] = rate_m_min[m] / (rate_UE[i][0]);
             # R_m = r_m * rate_UE[0:s_m, 0]
-        elif m==1:        
-            X_m[i] = rate_m_min[m] / rate_UE[i + S[m-1]][0];
-            
-        elif m==2:        
-            X_m[i] = rate_m_min[m] / rate_UE[i + S[m-1] + S[m-2]][0];
-        else:
-            print("Number of MVNOs = 3")            
-            
-            # R_m = r_m * rate_UE[sum(S[:m]):(sum(S[:m]) + S[m]), 0]
+        elif m == 1:
+            X_m[i] = rate_m_min[m] / rate_UE[i + S[m - 1]][0];
 
-    # assign fraction of bandwidth to non-QoS users: 
-    sum_X_m_nonQoS = r_m - np.sum(X_m)   # total fraction of bandwidth allocate to non_QoS users 
-    
-    x_bandwidth_each_non_QoS_user = sum_X_m_nonQoS/s_m_nonQoS;
-    
-    X_m[s_m_QoS:(s_m-1)] = x_bandwidth_each_non_QoS_user; 
-
-    
-    # Calculate valuation for each MVNO: 
-    V_m = np.zeros(s_m); 
-    
-    for i in range(0,s_m-1):
-        if m == 0:
-            # print(rate_UE[0:s_m][0])
-            V_m[i] = np.log10(X_m[i]*rate_UE[i][0]);
-            # R_m = r_m * rate_UE[0:s_m, 0]
-        elif m==1:        
-            V_m[i] = np.log10(X_m[i]*rate_UE[i + S[m-1]][0]);
-            
-        elif m==2:        
-            X_m[i] = np.log10(X_m[i]*rate_UE[i + S[m-1] + S[m-2]][0]);
+        elif m == 2:
+            X_m[i] = rate_m_min[m] / rate_UE[i + S[m - 1] + S[m - 2]][0];
         else:
             print("Number of MVNOs = 3")
-                                  
-    
-    return np.sum(X_m), np.sum(V_m)
 
-    
+            # R_m = r_m * rate_UE[sum(S[:m]):(sum(S[:m]) + S[m]), 0]
+
+    # assign fraction of bandwidth to non-QoS users:
+    # print("X_m = ", X_m);
+
+    sum_X_m_nonQoS = r_m - np.sum(X_m)  # total fraction of bandwidth allocate to non_QoS users
+
+    # print("np.sum(X_m)  = ",np.sum(X_m) );
+    #print("r_m  = ", r_m);
+    #print("sum_X_m_nonQoS = ", sum_X_m_nonQoS);
+
+
+
+    x_bandwidth_each_non_QoS_user = sum_X_m_nonQoS / s_m_nonQoS;
+
+    X_m[s_m_QoS:s_m] = x_bandwidth_each_non_QoS_user;
+
+    print("Xm = ", X_m);
+
+    # Calculate valuation for each MVNO:
+    V_m = np.zeros(s_m);
+    R_m = np.zeros(s_m);
+
+    for i in range(0, s_m):
+        if m == 0:
+            # print(rate_UE[0:s_m][0])
+            V_m[i] = np.log10(X_m[i] * rate_UE[i][0]);
+            R_m[i] = X_m[i] * rate_UE[i][0];
+            # R_m = r_m * rate_UE[0:s_m, 0]
+        elif m == 1:
+            V_m[i] = np.log10(X_m[i] * rate_UE[i + S[m - 1]][0]);
+            R_m[i] = X_m[i] * rate_UE[i + S[m - 1]][0];
+
+        elif m == 2:
+            V_m[i] = np.log10(X_m[i] * rate_UE[i + S[m - 1] + S[m - 2]][0]);
+            R_m[i] = X_m[i] * rate_UE[i + S[m - 1] + S[m - 2]][0];
+        else:
+            print("Number of MVNOs = 3")
+
+    # print("V_m =", V_m);
+
+    return np.sum(X_m), np.sum(V_m), V_m
+
+
 print ("Starting ...")
-    
-    
+
 """Main function"""
 
 # Initializate network model
 
+plt.close("all");
+
 I = 1;  # Number of InP
 M = 3;  # number of MVNO
-S = np.array([10, 20, 30])  # Number of users at each MVNO
+S = np.array([10, 14, 6])  # Number of users at each MVNO
 
 # Getting network model (using class)
 
@@ -405,8 +424,7 @@ power_MBS = 43  # dBm
 # Z_m_max = np.array([100, 40, 70])
 
 # Z_m_max = np.array([100, 100, 100])
-rate_m_min = np.array([2, 4, 8]); # Mbps
-
+rate_m_min = np.array([2, 4, 6]);  # Mbps
 
 # Calculate noise
 Noise = 10 ** (calculateNoise(bandwidth) / 10)  # ~~ -100dBW
@@ -432,11 +450,11 @@ for i in range(n_UE):
         rate_UE[i][j] = np.log2(
             1 + 10 ** (calculateReceivedPower(power_MBS, distance_BS_to_UE[i][j]) / 10) / Noise)
 
-#print(rate_UE)
+# print(rate_UE)
 
-#print(test)
+# print(test)
 
-iter = 10 # Number of Interations
+iter = 25  # Number of Interations
 
 Q = np.zeros(shape=(M, iter))  # Matrix to update penalty to MVNO
 Q[:, 0] = 0.1
@@ -448,21 +466,19 @@ BETA = np.zeros(shape=(I, iter))  # Matrix to update biding value to InP
 BETA[:, 0] = 0.1
 
 RATE = np.zeros(shape=(M, iter))  # Sum data rate matrix of MVNOs
-RATE[:, 0] = 10 # s
-
+RATE[:, 0] = 10  # s
 
 X_M = np.zeros(shape=(M, iter))  # Sum data rate matrix of MVNOs
-X_M[:, 0] = 0.8 # Mbps
+X_M[:, 0] = 0.8  # Mbps
 
 # RM = np.zeros(shape=(M, iter))  # Number of RBs allocate to MVNOs
 # RM[:, 0] = n_RB/M
 
 RM = np.zeros(shape=(M, iter))  # The fraction of bandwidth to MVNOs
-RM[:, 0] = bandwidth/M
-
+RM[:, 0] = bandwidth / M
 
 RV = np.zeros(shape=(np.sum(S), iter))  # Vector data rate of users in all MVNOs
-RV[:, 0] = 0.5 # Mbps
+RV[:, 0] = 0.5  # Mbps
 
 # Stage I: Resource Competition Game
 
@@ -473,9 +489,9 @@ for i in range(1, iter):
     # PHASE I
 
     # Step 1: Updating penalty value to MNVO --> Q matrix
-        # Using function: penalty_to_mvno(beta, r_m, R, q_m_old, b)
+    # Using function: penalty_to_mvno(beta, r_m, R, q_m_old, b)
     for m in range(M):
-        Q[m][i] = penalty_to_mvno(BETA[0][i-1], RM[m][i-1], bandwidth, Q[m][i-1], B[:, i-1])
+        Q[m][i] = penalty_to_mvno(BETA[0][i - 1], RM[m][i - 1], bandwidth, Q[m][i - 1], B[:, i - 1])
     # print('Q[:, i] =', Q[:, i])
     # print(test);
     # Step 2: Updating bidding value to InP --> B
@@ -489,41 +505,62 @@ for i in range(1, iter):
         else:
             RV_m = RV[sum(S[:m]):(sum(S[:m]) + S[m]), i - 1]
 
+        # print("RV=", RV)
+
         B[m][i] = bidding_value(RV_m)
-    #print('B[:, i] =', B[:, i])
+    # print('B[:, i] =', B[:, i])
 
     # Step 3: Broadcast virtual price (how much for each resource block)
     # using virtual_price(b, R)
     BETA[0][i] = virtual_price(B[:, i], bandwidth)
 
-    #print('BETA[0][i] =', BETA[0][i] )
+    # print('BETA[0][i] =', BETA[0][i] )
 
     # Step 4: InP calculates number of RBs to allocate to each MVNO according to
     # bidding value
     # Using function: cal_number_of_rbs(b_m, b, R)
+    # print('RM[:, i] =', RM[:, i-1])
+    # print(test);
+
     for m in range(M):
-        RM[m][i] = cal_number_of_rbs(B[m][i], B[:, i], bandwidth) 
+        print "B[m][i-1] =", B[m][i-1];
+        print "B[:, i-1] =", B[:, i-1];
+
+
+        RM[m][i] = cal_number_of_rbs(B[m][i], B[:, i], bandwidth) # --> actually, this function will return fraction of bandwidth we will allocate.
         # RM[m][i] = RM[m][i]
-    #print('RM[:, i] =', RM[:, i])
+    # print('RM[:, i] =', RM[:, i])
+    # print(test);
+
+
 
     # PHASE II
     # Step 5: Updating resource allocation at each MVNO
     for m in range(M):
         # np.sum(X_m), np.sum(R_m * X_m), R_m*X_m = DD_method(S, Z_m_max, m, r_m, rate_UE, rate_m_min)
         # X_M_A, RATE_A, V_m_A = DD_method(S, Z_m_max, m, RM[m][i], rate_UE, rate_m_min)
-        
-        X_M_A, RATE_A = KKT_method(S, m, RM[m][i], rate_UE, rate_m_min)
-        # rate_UE is log2(1+SNR) in the Globecom paper). 
-        
+        s_m = S[m];
+        print("RM[m][i]", RM[m][i]);
+
+        X_M_A, RATE_A, V_m_A = KKT_method(S, m, RM[m][i], rate_UE, rate_m_min)
+        # rate_UE is log2(1+SNR) in the Globecom paper).
+
+        # Update data rate of all UEs
+        if m == 0:
+            # print(rate_UE[0:s_m][0])
+            # print(np.shape(V_m_A), np.shape(RV[0:s_m, i]));
+            # print (s_m)
+            RV[0:s_m, i] = V_m_A
+            # V_m_A: vector data rate of USERS in the MVNO m
+        else:
+            RV[sum(S[:m]):(sum(S[:m]) + S[m]), i] = V_m_A
+
         X_M[m][i] = X_M_A
         RATE[m][i] = RATE_A
 
-    #print('RV[:, i] =', RV[:, i])
-    #print('X_M[:, i] =', X_M[:, i])
-    #print('RATE[:, i] =', RATE[:, i])
-
-
-
+    # print('RV[:, i] =', RV[:, i])
+    # print('X_M[:, i] =', X_M[:, i])
+    # print('RATE[:, i] =', RATE[:, i])
 
 # Stage II: Output display
 
@@ -534,8 +571,10 @@ for i in range(1, iter):
 
 # 1. Data rate of each MVNO following time
 
-plot_RATE(RATE, M, iter)
+print("RATE = ", RATE, RM);
 
+
+# plot_RATE(RATE, M, iter)
 
 plot_RA(RM, M, iter)
 
